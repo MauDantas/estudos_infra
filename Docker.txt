@@ -1,0 +1,88 @@
+#########DOCKER LINUX TIPS################
+
+##########Day 1##############
+
+Container é um tipo de abstração de máquina que, apesar dos processos rodando nele serem visíveis ao sistema operacional, não são visíveis a outros containers.
+	Isolamento lógico: é o falado anteriormente. Os containers não tem acesso aos arquivos e recursos de instância definidos nos outros, estão isolados 
+também por rede de usuarios e processos. Responsável por tal são os namespaces
+	Isolamento físico: é a alocação de recursosa um determinados containers tais como CPU, I/O, Disco e memória. Responsável são os 
+Se 10 containers tem a mesma imagem originária, a imagem utilizada é a mesma. Porém há uma cada de abstração acima onde os containers vão variar um do outros
+No container não há sistema operacional completo, apenad módulos
+	Netfilter: programa o qual se interage com o Netfilter. Todos os redirecionamentos de pacotes, de rede, etc. são feitos pelo iptables/Netfilter. 
+	Namespaces: Módulo do kernel Linux que é o responsável pelo isolamento de processos. Exemplos de namespace são namespace user, namespace processo, namespace net, etc. 
+Todos módulos do kernel do linux sem necessidade de compilá-lo.
+	cgroup: Utilizado para distribuir a carga de recursos por aplicações. Aloca memoria, processamento, etc.
+	
+Instalando o Docker:
+	curl -fsSL https://get.docker.com | bash  // Script que vai identificar qual seu sistema operacional, adicionar o endereço de repositório do docker pra o Ubunto e vai fazer o apt-get install do repo correto para sua distribuição de SO.
+Docker Client: Quem recebe as instruções
+Docker Server: Responsável pela orquestração
+
+docker version // Verifica a versão do docker instalado
+docker container ls // Lista os containers
+docker ps // também lista os containers
+
+sudo docker container run -ti hello-world // executa o container hello world que é ideal para conhecer instâncias básicas de containers. Ele roda, exibe a mensagem e morre.
+
+-ti// container tem que ter um terminal e quando o container, acessaremos o mesmo
+
+docker container run -ti ubuntu // baixa distribuição do ubuntu e reencaminha usuario para dentro do container
+
+
+Saindo de containers:
+	exit // dentro do container, utilizando essa metodologia de entrar diretamente no container assim que o mesmo é iniciado, caso execute 
+esse comando você finaliza a instância. Porque você estaria dando exit na instância principal do bash do Ubunto. O qual, está subentendido 
+pelo docker como processo principal desse container.
+
+	ctrl+p+q // Atalho para sair do container sem que aconteça a mesma situação de exit
+
+	Note que isso só vale para Containers os quais você entra diretamente no terminal. No exemplo do curso, por exemplo, se entrarmos no container através
+do docker exec -it [nome_do_container] bash , criamos outra execução do terminal. Nesse caso, se você usar exit, você não matará o container. Isso foi
+testado e verificado durante a prática do curso
+
+Entrando no container:
+
+	docker container run -ti ubuntu // baixa distribuição do ubuntu e reencaminha usuario para dentro do container
+	docker container attach [CONTAINER_ID] // Entra no container no processo principal. Ou seja, se você sair com exit você vai matar o Container
+	docker exec -it [CONTAINER_ID] bash// Abre uma nova instância do Bash. Portanto, quando você executar exit, você mata o bash que você criou e não o inicial
+
+sudo docker container run -it nginx // Exemplo de como baixar um container com serviço como principal. O indicado é não usar -it. Pois se você
+usar ele o processo do Ngnix, que é o principal, vai rodar em primeiro plano.
+
+sudo docker container run -d nginx // desa forma, o container do ngnix vai rodar em segundo plano
+
+docker container start // inicia um container
+docker container stop // para um container
+docker container restart// reinicia um container 
+docker container pause // Pausa os serviços do container
+docker container unpause // Desfaz pause
+
+docker container logs -f // equivalente a um tail -f no log do container
+
+docker container rm // remove container que não está em execução
+docker container rm -f // remove container de maneira forçada. Inclusive se estiver em execução
+
+docker contatiner stats // mostra as estatísticas de uso de recursos do container
+docker container top // análogo ao top do linux
+
+docker container run -d -m 128M nginx // Limita o uso de memória do container a 128 M, poderia ter sido usado --memory como análogo
+
+sudo docker container update // atualiza recursos que o container pode utilizar
+
+Parâmetros de limites de uso de recursos
+	-m ou --memory // limita o uso de memória ao container
+	--cpus // Valor relativo aos cores de cpu que a maquina pode usar. valores inteiros, como 1 ou 2 , dão capacidade ao container de usar 
+1 ou dois cores. Enquanto valores decimais se referem a percentagem de um core que pode ser utilizado
+
+
+Exemplo básico de Dockerfile
+
+	FROM debian
+
+	LABEL app="Giropops"
+	ENV MAUMAS="Obeso"
+
+	RUN apt-get update && apt-get install -y stress && apt-get clean
+
+	CMD stress -- cpu 1 --vm-bytes 64M --vm 1
+	

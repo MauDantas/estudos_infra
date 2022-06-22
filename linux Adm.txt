@@ -1,0 +1,488 @@
+#########################################################################################################################################
+
+day 4
+
+date -s // atualiza manualmente a data
+date -u // Atualiza a data através do servidor ntp
+date // lista as datas
+date +%(d/Y/y/m) // mostra apenas o valor referente as variaveis
+ln // Cria um link, ou seja um atalho
+ln -s // Cria um link independentemente se estão em diretórios diferentes
+df -t // Filtra os diretórios pela extensão de arquivos especificada
+df - H // Mostra o tamanho dos diretórios como vendidos pelo fabricante ajustados de acordo com seu tamanho (giga, mega...)
+df - T // Mostra a organização dos diretorios incluindo a extensão de arquivos dos volumes
+df -a // Mostra a organização dos diretorios, também os ocultos
+df // Mostra a organização dos diretorios
+du -s //
+find (PATH) -a(min/time) // mostra os arquivos que foram acessados nas últimas unidades de tempo mostradas
+find (PATH) -m(min/time) // mostra os arquivos que foram modificados nas últimas unidades de tempo mostradas
+find (PATH) -c(min/time) // mostra os arquivos que foram criados nas últimas unidades de tempo mostradas
+find (PATH) -size //Encontra arquivos maiores ou menores que o tamanho denotado
+free -h // mostra memoria livre com tamanho ajustado
+free -s // repete o comando free no intervanlo de segundos determinado
+head -c // primeiros caracteres
+head -n // primeiras linhas
+more (ARQUIVO) // mostra o arquivo aos poucos
+cat | more // maneira alternativa e desvantajosa
+less (ARQUIVO) // Mostra o arquivo aos poucos e pode ser rolado pra cima e pra baixo
+sort // Similar ao cat, mas ordena por ordem alfabetica a saída 
+sort -r // ordena de forma decrescente
+sort -n // Classifica por ordem numerica
+sort -c // diz se a lista está ordenada
+sort +1 // ordena a partir da segunda palavra
+sort +numero + "delimitador" // diz qual símbolo separa as palavras para serem ordenadas
+sort -k // analogo ao sort +numero
+tail -n // visualiza as n ultimas linhas de um arquivo
+tail -f // mostra o final do arquivo bem como atualizações ao final dele
+time // mostra o tempo que demorou pra executar um comando
+touch // Cria arquivos
+touch -t mmddhhhhYYYY // modifica a data de criação de um arquivo com a data no formato especificado
+uptime // tempo que a maquina está ligada
+dmesg // Exibe as mensagens do kernel
+dmesg -t // Exibe as mensagens sem a timestamp desde o boot do sistema
+dmesg --color=never // retira o colorido da saída
+dmesg -w // similar ao tail -f, porém para mensagens do kernel
+dmesg -x // decodifica algumas mensagens em texto mais legivel para humanos
+dmesg -T // converte a timestamp em horario padrão
+dmesg -c // limpa as mensagens a cada vez que o comando é executado
+mesg y// ativa metodo de envio de mensagens entre usuarios do terminal
+echo // exibe mensgens na tela
+echo -n // retira a quebra de linha 
+echo -e // habilita a aparição de caracteres especiais
+su // super usuario. Login root
+sudo // utiliza os privilegios do seu usuario e não do root
+su -// elimina todas as variaveis de ambiente anteriores
+/bin/su - // força o comando su correto
+su - usuario -s /bin/bash //  força o login com o usuario indicado
+adduser USUARIO sudo // adiciona usuario ao grupo de usuarios privilegiados
+deluser USUARIO sudo // remove o usuario do grupo privilegiado
+sync // gravar o buffer de memoria do disco sem precisar esperar
+uname // nome do kernel do sistema operacional
+uname -a // nome do kernel do sistema e detalhes adicionais de versionamento e distribuição
+uname -n // hostname
+uname -r // versão do kernel
+uname -v // data de compilação do kernel
+uname -m // arquitetura do sistema operacional/processador
+systemctl reboot // reinicia a maquina através do gerenciador de serviços
+reboot // reinicia a maquina
+reboot -f // força reiniciar sem fechar os programas
+shutdown -r now // reinicia instantaneamente
+echo b > /proc/sysrq-trigger // reinicia a maquina forçadamente quando os outros comandos não respondem
+halt // desliga a maquina
+systemctl halt // desliga a maquina através do gerenciador de serviços
+shutdown -h now // equivalente ao halt
+echo o >/proc/sysrq-trigger // desliga a maquina forçadamente quando os outros comandos não funcionam
+shutdown -h hh:mm // agenda desligamento
+shutdown -c // cancela agendamento de desligamentos
+wc // contador de palavras. Mostra, nessa ordem, numero de linhas / numero de palavras / tamanho do arquivo
+seq inicio_da_sequencia incremento fim_da_contagem // imprime intervalos de numeros assim como sugerido pelo nome das variaveis
+
+#########################################################################################################################################
+
+Day 5
+
+
+lsattr // lista atributos
+chattr +/- (i) // Dá atributos aos arquivos. i é um atributo que impede exclusão 
+chattr -R // Remove o atributo recursivamente em diretórios
+chattr +/-a // insere o atributo a. Arquivo só pode ser extendido, não pode ser editado nem alterado. Para pastas, ele não passa o atributo aos arquivos
+chattr = //Defina TODOS os atributos do arquivo após o igual. Comando aceita expressões regulares para mostrar a saída dos arquivos
+chattr +/-c // Com esse atributo, o arquivo é armazenado de forma compactada
+chattr +/-s //Remoção segura. O arquivo é totalmente deletado e não só a referência. Não funciona bem no sistema de arquivos ext4
+chattr +/-S // Toda vez que o arquivo for alterado, é gravado imediatamente no Disco. 
+chattr +/-D // Toda vez que o arquivo dentro do diretório for alterado, é gravado imediatamente no Disco. 
+chattr +/-d // Os arquivos desta pasta não são incluídos no backup da ferramenta dump
+cut -d "" -f //define o delimitador entre arquivos. Pode ser um espaço, :, #, etc. e após o -f diz qual campo você desja que seja exibido
+cut -c intervalo_inicio-intervalo-final // pega um intervalo de bytes do arquivo 
+cut -b intervalo_inicio-intervalo-final // pega um intervalo de bytes do arquivo. Incluindo caracteres especiais
+cmp -s // Compara dois arquivos e retorna o numero de bytes diferentes
+diff // Compara dois arquivos e retorna o numero das linhas diferentes entre arquivos e o valor
+diff -u // Mostra inflormações sobre os arquivos além das linhas diferentes
+diff -r // compara diretorios
+patch -N // aplicação para gravar diferenças
+patch -R // Reverte os patches
+patch -p1 -N</tmp/patch-5.8.13-14 // Exemplo de como aplicar um patch
+whereis // mostra onde estão localizados o arquivo que tem a página de manual
+which // mostra onde está o binário da aplicação consultada
+ps // Mostra os programas/Processos em execução dop terminal atual
+ps | grep PROGRAMA // busca o processo do programa e mostra em qual terminal ele está rodando
+ps -a // Mostra todos os processos rodando na maquina que estejam associados ao usuario atual
+ps -ax // Mostra todos os processos rodando na maquina de todos os usuários
+ps -axu / Mostra todos os processos rodando na maquina de todos os usuarios e nomeia esses usuarios
+
+Descrição da tabela de processos:
+User
+PID: Identificador do processo
+%CPU
+%MEM
+VSZ: Virtual Size. Tamanho virtual do processo (swap+RSS/RAM)
+RSS: Resident set size . A memoria real ocupada por um processo na memoria principal (primária)
+STAT: Status. S significa soneca não interrompivel. D significa I/O de disco. I significa ocioso. R para running ou executando. Z para zumbi, quando um programa principal é executado mas continua rodando em background. X processo excluído. 
+
+ps -axm // Detalha o uso de memória dos processos.
+ps -axf // Mostra todos os processos em estrutura de árvore, ou seja, mostra quais os processos pais, quais processos executaram outros processos.
+ps -axe // Mostra a localização das variaveis de ambiente
+ps --sort=[COLUNA] // ordena os processos pela coluna especificada. 
+pstree // mostra os processos de maneira mais grafica. Faz parte do pacote psmisc
+pstree -A // Imprime utilizando caracteres ASCII
+pstree -c // Mostra toda estrutura incluindo os processos pais
+pstree -h // mostra os processos pais e os anteriores
+pstree -hp // mostra os processos pais e os identificadores (PID)
+ps -hpu // mostra o id do processo no inicio da execução
+pstree -p -H [PID] // Destaca o processo na impressão
+/proc/$PID // Substiuindo $PID pelo numero de seu processo (identificado com ps) é posivel buscar varias informações sobre o programa rodando dentro de sua pasta
+which // Mostra onde está localizado o binário do programa
+comando &//¨& faz com que o comando rode em segundo plano
+jobs //  mostra ps comandos que estão rodando em segundo plano
+fg [id]// traz os comandos rodando em segundo plano pra primeiro plano
+bg [id] // leva o comando ao segundo plano
+sleep [num]// roda um processo que estará ativo durante x segundos. Senão for rodado em background, o processo mantém o terminal ocupado até o fim de sua execução 
+ALT+F1/F2/F3/F4/F5/F6 // alterna entre terminais
+COMANDO ; COMANDO // permite separar varios comandos para serem executados de uma só vez
+pidof [PROCESSO] // você especifica o processo e o linux retorna o PID. Sem precisar buscar o mesmo na arvore de processos
+kill %[ID] // Termina tarefa em background
+kill (-15) [PID] // o -15 é o sinal implicito. Ele pede para o processo fechar (Similar a clicar no x do windows
+kill -9 [PID] // Encerra o processo forçadamente. Similar ao que acontece no gerenciador de tarefas. Atenção para utilizá-lo em bancos de dados e softwares que fazem muitas alterações. 
+kill -1 [PID] // kill -HUP
+kill -HUP [PID] //Sistema relê a config do processo e manda o sinal de que usou o kill para o processo
+pgrep -u [IDENTIFICADOR] // pesquisa todos os processos do usuario
+pgrep [IDENTIFICADOR] // pesquisa o processo do identificador em todos os usuarios 
+pkill -u [USUARIO] [PROGRAMA] // pesquisa o nome do processo executados pelo usuario e mata
+killall -u [USUARIO] [PROGRAMA] // análogo ao pkill
+killall5 // Mata todos os processos. Utiliza os mesmos argumentos do kill e só roda como superusuario (su)
+nohup [COMANDO] // Ignora os 'kill' que não são -9(-KILL) e -15 (-TERM)
+top // Mostra tabela com varias informações de processos atualizada em tempo real. Similar ao gerenciador de tarefas do windows (para visualização)
+
+Características importantes:
+	Se utilizarmos processamento paralelo na aplicação, a soma do processamento das CPUs pode ser maior que 100%. 
+	%Cpu:
+		us: percentagem de uso do cpu
+		sy: percentagem de uso do sistema
+		ni: uso de nice
+		id: percentagem de sistema ocioso (idle), ou seja, disponível (inverso de uso)
+		wa: tempo de processos em waiting. Ou seja, esperando para serem executados. Waiting alto significa que a aplicação precisa ser otimizada ou que o disco está lento. 
+		hi: tempo que levou para tratar interrupções de hardware
+		si: tempo que demorou para tratar interrupções de software
+		st: tempo que foi roubado pela vm pelo hypervisor. Importante em virtualizações
+	m // Dentro de top, a tecla m faz com que mude o jeito que a memoria seja exibida
+	1 // exibe e ocula as cpus de maneira separada
+	SHIFT+m // ordena os processos por memória
+	f // Exibe uma tela com a descrição de todas as siglas mostradas por top
+		a // apertando a tecla nesse modo, move o campo selecionado como prioridade na hora de ordenar na tabela
+		w // move a prioridade em sentido oposto ao de a
+		q // sai da tela 'f'
+	k // executa kill 
+	d // aumenta/diminui o tempo de atualização da tela do top
+	c // excluindo os processos zumbi da exibição
+	i // executa top excluindo os processos zumbi
+	SHIF+w // Salva a customização do top
+	Tabela:
+		PID
+		User
+		PR: prioridade agendada. 
+		NI: nice. Prioridade pra agendar no sistema
+		VIRT: Tamanho virtual do processo (swap+RSS/RAM)
+		RES: A memoria real ocupada por um processo na memoria principal (primária)
+		SHR: Memoria compartilhada utilizada entre mais de um programa
+		S : Status. Status. S (sleeping) significa soneca não interrompivel. D significa I/O de disco. I (idle) significa ocioso. R (running) para os que estão executando. Z (zombie) para zumbi, quando um programa principal é executado mas continua rodando em background. X processo excluído. 
+		
+top -i // executa top excluindo os processos zumbi
+top -c // localização completa dos binarios do comando
+nice -n [-20-19] [COMANDO] // -20 é a prioridade mais alta, 19 é a mais baixa. Prioridades abaixo de 0 tem que ser executadas por um superusuario (su)
+renice -n [-20-19] [PID] // muda a prioridade de execução de um processo em execução
+tload // mostra a carga da cpu graficamente ao decorrer do tempo
+vmstat // exibe o status de consumo de memoria, cpu, swap, system e I/O
+vmstat [NUM] //além de exibir, atualiza os valores a cada NUM de segundos
+screen // Programa para ter muitos terminais em uma só tela
+	CTRL+a+a// Alternar entre janelas utilizadas recentemente
+	CTRL+a+c // Cria uma janela 
+	CTRL+a+NUM // alterna entre quaisquer telas
+screen -ls // mostra as screen em execução
+screen -d // sair das telas
+screen -x // reconecta a screen (util quando perde a conexão ssh)
+tmux new // Cria uma instância para muitos terminais similar a screen
+	CTRL+b+c // Cria uma janela 
+	CTRL+b+NUM // alterna entre quaisquer telas
+	CTRL+b+d // detachar do tmux
+tmux attach // attachar a sessão 
+tmux CTRL+b+" // Divide a tela no meio na horizontal
+		CTRL+b+SetaPraCima // Vai pra tela superior
+		CTRL+b+SetaPraBaixo // Vai pra tela inferior
+tmux CTRL+b+% // Divide a tela no meio na vertical
+		CTRL+b+SetaPraEsquerda // Vai pra tela esquerda
+		CTRL+b+SetaPraDireita // Vai pra tela direita
+tmux CTRL+b+w // Resumo de janelas abertas
+ctrl+b(pressionados)+setas // Ajuste de tamanho da janela
+exit // No contexto do tmux, vai fechando as janelas duplicadas. Ao fechar todos, o tmux é finalzado
+
+
+#########################################################################################################################################
+
+Day 6
+
+fdisk [PARTIçÂO]// Particionador de disco 1
+	Tipos de partição:
+		Partição primaria 
+		Partição estendida
+		Partição lógica
+	m // Tecla que mostra ajuda e descrição de comandos	
+	Letras que definem o tipo de partição a ser criada:
+		o // Partição DOS
+		g // Partição GPT
+		s // Partição SUN
+	n // Cria nova partição
+		p // Partição primaria
+		e // Partição estendida
+			Nummero de partição [1-4]
+				Primeiro setor: Onde começa sua partição
+				Ultimo setor : Tamanho de sua partição prescedido por + (se o endereçamento inicial for o de inicio da partição) ou de - (se você quer escrever atras do valor de primeiro setor)
+	t // alterar tipo de partição
+		linux          - 83
+		swap           - 82
+		extended       - 05
+		uefi           - EF
+		raid           - FD
+		lvm            - 8E
+		linuxex        - 85
+mkfs.[TIPO DE ARQUIVO] [CAMINHO DA PARTICAO] // Formata a partição e prepara pra uso
+mkswap [CAMINHO DA PARTICAO] // Formata a partição como SWAP
+wipefs -a [CAMINHO DA PARTICAO] // Destroi tudo que foi criado na partição
+gdisk [PARTIçÂO] // Particionador de disco 3
+	o // Destroi todas as partições
+	i // lista as partições
+	n // Cria partição
+	b // Backup dos arquivos
+		caminho do backup
+	v // verificação de layout (se há problemas no parcionamento)
+	j // corrigir
+	x // modo expert
+		c // alterar tipo de partção
+		d // alterar o setor de alinhamento (primeiro setor  e ultimo)
+		s // resize ou mudança de tamanho da tabela de partição
+		u // replicar o esquema de particionamento em outro disco
+		z // destruir
+			Pergunta se quer limpar MBR
+parted [PARTIçÂO] // Particionador de disco 3
+	print // Exibe as partições no disco
+	mklabel [TIPO DE PARTICAO] // Define o sistema de tipos de partição
+	mkpart // Após de definida a label do disco, cria efetivamente a partição
+		tipo de partição (primary/extended)
+		Tipo de sistema de arquivos 
+		Start: inicio de onde vai escrever no disco em MB
+		end: fim de onde vai escrever em MB
+	set {NUMERO DA PARTICAO] boot // adiciona flag de boot a particao
+	unit kB/mB/gB // muda o tipo padrão de unidade do software
+	rm [ID]//remove partições
+cfdisk [PARTIçÂO] // Particionador de disco 4
+	O particionador é totalmente interativo. Como se fosse um programa com GUI
+	t // muda o tipo da partição
+apt install dosfstools // Pacote com suporte aos sistemas de arquivos derivados de DOS
+
+
+Planejamento básico de partições em sistemas linux:
+	Desktop:
+		Com muitas partições:
+			- '/' => 20 GB
+			- /usr => 15 GB
+			- /var => 10 GB
+			- /home => 500 GB
+			- swap => 8 GB (tamanho da swap deve espelhar o tamanho da quantidade de memória)
+		Com poucas partições:
+			- '/' => 50 GB
+			- /home => 930 GB
+			- swap => 8 GB (tamanho da swap deve espelhar o tamanho da quantidade de memória)	
+	Servidores:
+		Servidor de e-mails:
+			- '/' => 20 GB
+			- '/var' => 900 GB (grande em razão desse Servidor armazenar muitos e-mails)
+			- '/home' => 5 GB
+			- 'swap' => 16 GB
+		Servidor de arquivos:
+			- '/' => 20 GB
+			- '/home' => 5 GB
+			- swap => 8 GB
+			- '/data' => 900 GB
+		Servidor WEB:
+			- '/' => 20 GB
+			- '/home' => 5 GB
+			- swap => 8 GB
+			- '/var' => 950 GB (responsável por armazenar /var/log e /var/www, importantes nesse servidor)
+
+mount /dev/sdaX CAMINHO_DA_PASTA_CRIADA // monta a partição livre dentro de uma pasta. X é o numero identificador da partição
+/etc/fstab // tabela onde estão localizados os caminhos para que você monte uma nova imagem em um novo espaço alocado. Util para adicionar memória secundária ou até substituir sem formatar
+lsof // lista arquivos que estão abertos
+
+#########################################################################################################################################
+Day 7 ASSISTIR DE NOVO SE DUVIDAS // AULA DE tune2fs, COMPLEMENTO fstab
+
+PARTUID // Não é um comando. É um identificador que substitui o caminho da partição na hora de executar tarefas
+blkid /dev/sd[LETRA]X // Retorna o PARTUID da partição
+tune2fs -L NOME [CAMINHO DA PARTIÇAO] // Você muda o caminho da partição como o nome padrão para qualquer nome que deseje.
+tune2fs -c 10 /dev/sd{LETRA]X // A cada 10 vezes montado, ele executa um FSK
+/etc/fstab
+	opção sync // toda vez que houver uma solicitação de gravação, é gravado imediatamente.
+	commit =5 // Grava a cada 5 segundos as modificaçõs no disco
+tune2fs -m PERCENTAGEM [CAMINHO DA PARTIÇAO] // Aumenta ou diminui a percentagem de blocos reservados pelo sistema na partição. Recomendado numeros pequenos em partições grandes. Pois é necessario apoximadamente espaços parecidos
+tune2fs -O ^has_jounal [CAMINHO DA PARTIÇAO] // Remove a característica de journaling do sitema de arquivos. Remover o Journaling foi sugerido pelo google para reduzir i/o quando utilizado em rede
+tune2fs -O has_jounal [CAMINHO DA PARTIÇAO] // Reabilita o journaling
+
+/etc/mk2fs.conf // Defini os padrões de formatação para cada partição a ser pariticionado para diferentes sistemas de arquivos
+	fs types // Decidir entre ext3 3 ext4
+	isize // decidir entre o tomanho dos inodes. Quanto maior o tamanho, maior o tamanho dos arquivos. Isso porém é ruim para arquivos pequenos. Pois eles passam a ocupar espaço muito grande na memoria
+		small
+		news
+		floppy
+		big
+		huge
+		largefile
+		largefile4
+
+mkfs.ext4 -b TAMANHO_DO_BLOCO [CAMINHO DA PARTIÇAO] // muda o tamanho d o bloco. Para arquivos grandes, usar numero grande. Para arquivos pequenos, usar numeros menores
+
+Formatar com mais de 16 terabytes
+	vim /etc/mk2fs.conf
+		Garantir que a opção 64bit está também em feature na variavel ext4
+truncate -s [SIZE] [NOME-DO-ARQUIVO] // Cria arquivos mas só os preenche quando o espaço é de fato preenchido
+
+Criando memória Swap manualmente:
+	dd if=/dev/zero of=[NOME-DO-ARQUIVO] bs= [BITES POR SETOR] count=[NUMERO DE VEZES QUE VAI GRAVAR] // Compia e grava em arquivo, nesse caso copa e grava apenas com 0. Um arquivo que nós não queremos que tenha informação. COunt vai dizer o tamanho do arquivo. Por exemplo, se usarmos 1024 bytes por setor (1kb), e quisermos um arquivo de um giga, devemos ter 1048576 em count. Numero correspondente a 1024 MB vezes 1024.
+	chmod 0600 [NOME-DO-ARQUIVO] // Com isso, impedimos que o usuario normal consiga ler os dados de memória para o arquivo que criamos antes preenchidos com 0
+	mkswap [NOME-DO-ARQUIVO] // Cria o arquivo como Swap
+	swapon [NOME-DO-ARQUIVO] // inicializa o arquivo como Swap.  	
+	
+	free // Comando para ver o tamanho de ambas memórias. Ram+Swap. A Swap criada estará armazenada lá
+	cat /proc/swaps // Mostrará onde estão as memorias swap utilizadas.  O arquivo de swap criado estará lá. Além disso detalhamento de quanto de swap está sendo utilizado.
+	
+	swapon -p [PRIORIDADE] [NOME DA SWAP]// Com o nome do arquivo que está presente em /proc/swaps, você pode manipular a prioridade para, por exemplo, dar ao Swap criado prioridade para que o sistema grave dados nele
+	
+	swapoff [NOME-DO-ARQUIVO] // Para retirar o arquivo do Swap de disco
+	
+	ATENÇÃO: Utilizar SSD para swap diminui bastante o tempo de vida util do SSD. 
+
+echo 1 >/proc/sys/vm/swappiness // Faz com que o sistema faça o possível para não utilizar swap. O recurso será utilizado somente em ultimo caso
+
+/sys // Padrão em todas as distribuições linux. Nele conseguimos idetificar status de várias variáveis como informações de dispositivos do sistema, economia de energia, etc. Mas voltado para controle de dipositivos, blocos e armazenamento
+	bus/ // tipos de barramento da máquina
+		pci
+		pnp // autoconfiguráveis
+		pci_express
+		scsi // tipo de categoria de hardware
+		gpio // virtualização em unidades de propósito geral i/o (entrada e saída). O linux é muito utilizado com microcontroladores e iot
+		i2c // Também para comunicação iteligente em barramentos utilizado por microcontroladores
+	block/ // dispositivos de bloco. Exemplos são as partições	
+		sd[LETRA DA PARTICAO]/ // Referente as características da partição
+			capability // capacidade da partição/disco
+			power/ // Pasta que contém aspectos de energia do HD
+				runtimestatus // se pode ver características da gerencia de Hardware. No linux é possível desligar a alimentação de energia do disco através do SO
+		loop // 		
+			removable //Identifica se o dispositivo é físico e pode ser removido manualmente ou não
+	fs/ // Corresponde a File System, ou seja, o sistema de arquivos da máquina
+		bpf/
+		cgroup/
+		ext4/ 
+			encryption //se o sistema de arquivos suporta criptografia
+			batched_discard // útil para ssds. Diz se o sistema suporta ou não 
+		pstore/
+	kernel/ //Dados sobre uso de recursos de dispositivos no kernel
+		cgroup // Utilizado para distribuir a carga de recursos por aplicações. Muito utilizado por Docker para fazer orquestração
+		irq // irqs utlizadas no hardware
+
+fstrim -v [DIRETORIO] // Inicializa a operação de descarte em SSDs. Se você tem um SSD é interessante utilizar para liberar os blocos para os inode utilizar os blocos de maneira mais eficiente
+vim /etc/fstab
+	[acrescentar : ,discard] nas opções de montagem. Junto a errors // Equivalente ao fstrimm mas faz isso em tempo real, diminuindo a performance da máquina
+
+fstrim -va // adicionar o comando ao crontab para liberar os inodes e aumentar a eficiencia é a melhor opção
+
+ 
+	
+/proc // Padrão em todas as distribuições linux. Nele conseguimos idetificar status de várias variáveis como para cada proceso, hardware e interrupções. Mais focado para rede e processos
+	1/ // Pasta do processo que iniciou o sistema
+		cmdline // mostra o comando que iniciou o sistema
+		environ // variaveis de ambiente no momento que o sistema foi executado
+		status // status de execução do processo
+	acpi/ // pasta referente a genrencia de energia e de interrupções em disco
+		wakeup // Status para que a máquina volte de um suspend
+	cpuinfo // Dados sobre o a CPU
+	interrupts // Todos os dados sobre todas as interrupções do sistema
+	devices // Mostra todos os dispositivos mapeados. Inclusive os presentes em /dev
+	dma // Qual método de Direct Memory Access (Acesso direto a memória)
+	ioports // identificadores de hardware de portas de entrada e saída
+	kcore // Varias informações sobre os programas em execução. O arquivo pode modificar o terminal causando problemas de visualização
+	loadvg //Mostra os niveis de uso de arquivos na maquina
+	meminfo // Informações sobre uso de memória. 
+		memoria anonima: Alguns programas utilizam a memória e incializam como memória anonima. Isso faz eles não aparecerem no top e em outros programas
+	misc // dados de memorias do sistema
+		watchdog: Verifica o kernel. Se o kernel parar de responder ele reinicia a máquina. É um mecanismo usado em alta disponibilidade
+		hwram: gerador de numeros aleatórios randomicos
+		psaux: utilizado em mouses com hardware ps2 obsoletos
+	modules // Temos os módulos carregados no sistema. São similares aos drivers do windows.
+	mounts // Pontos de montagem de sistema
+	uptime // mostra o uptime da máquina em dados brutos. Numero inicial é o numero em segundos desde que a maquina foi iniciada
+	sys/ // Dados sobrea execução do sistema
+		/net/ // Informações sobre interface de rede
+			ipv4/ // informações sobre o protocolo IPV4. Por exemplo, quais outros protocolos estão e quais não estão em execução na maquina
+	
+reset// reseta o terminal para corrigir erros. Não reseta a maquina, apenas o tty	
+strings
+w // mostra o conteudo de /proc/loadavg de maneira mais user friendly
+
+Outros sistemas de arquivos além do ext4, todos contém journaling:
+	xfs // Se sai melhor onde há uma quantidade de gravações muito grande e é conhecido pela resiliência. A recuperação de arquivos era melhor que o ext3, mas o ext4 equilibrou o desempenho nesse sentido
+	btrfs // Sistema de arquivos de segunda geração. Além do armazenamento normal, ele permite também a compactação do conteúdo e deduplicação.
+	zfs // Também de segunda geração, faz o que o btrfs faz de forma automática. Não é distribuído com o linux mas você pode adicionálo posteriormente.
+	reiserfs // Bom quando os arquivos são pequenos/minusculos. Trabalha com um algoritmo de mapeamento usando arbore btree eficiente que aumenta o desempenho no acesso de arquivos pequenos
+	jdb
+
+apt-get install xfsprogs // Para montar em xfs
+mkfs.xfs /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // Formata uma partição existente em xfs
+mount /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] /mnt //Monte o volume após criá-lo
+
+apt-get install btrfstools // Para montar em brtfs
+mkfs.btrfs /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // Formata uma partição existente em btrfs
+mount /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] /mnt //Monte o volume após criá-lo
+mount /dev/sdZX /mnt -o compress //Ao montar o volume, ativa a compressão de arquivos. Ele só vai comprimir os arquivos considerar comprimíveis. Se você copiar uma pasta para lá como, por ex, /etc já notará uma diminuição significativa no tamanho da mesma.
+
+apt-get install reiserfs-profs // Para montar em reiserfs
+mkfs.reiserfs /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // Formata uma partição existente em btrfs. A compactação tem que ser configurada
+mount /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] /mnt //Monte o volume após criá-lo
+
+mksfs.(aperta tab) // mostra todas as opções de formatação de arquivos
+
+Gerenciamentode partições lógicas (lvm):
+	-Para expandir para mais de 4 partições é necessário utilizar o lvm
+	-Em 1989 foi introduzido no aix o lvm
+	-com lvm você pode aumentar e reduzir o tamanho da partição com o sistema em funcionamento
+	-Abaixo ferramentos para gerência de partições dinamicas lvm
+	-Permite que voce crie volumes criptografados usando vmcrypto
+
+wipefs -a /dev/sd[LETRA IDENTIFICADORA DO DISCO] //Formantando o dispositivo
+cfdisk /dev/sd[LETRA IDENTIFICADORA DO DISCO] // Criando partição para montagem
+	gpt 
+		Em Free Space clique em new e crie duas partições de 1 GB (uma para ser a partição e a outra para adicionar mais espaço ao volume lógico)
+		Clique em Write/Salvar e confirme (caso não haja dados no espaço que esteja utilizando)
+partprobe /dev/sdb // Para se certificar que as informações da partição foram atualizadas no sistema		
+cfdisk /dev/sd[LETRA IDENTIFICADORA DO DISCO]		
+	Selecione cada partição e em Type/Tipo selecione linux lvm. 
+	Vá em write/salvar e salve as alterações e depois saia
+apt-get install lvm2
+pvcreate /dev/sd[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // cria um volume físico
+pvdisplay // mostra os volumes físicos criados na máquina
+pvs // lista os volumes físicos de forma reduzida
+vgcreate [NOME DO GRUPO DO VOLUME] /dev/sdb[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // cria o grupo do volume e adiciona a partição
+vgs // lista os grupos de volume
+lvcreate -n [NOME DA PARTIÇÃO] -L [TAMANHO DA PARTIÇÃO] [NOME DO GRUPO DO VOLUME] // Logical Volume Create. Comando que cria os lvm
+lvdisplay // mostra todos os volumes lógicos
+mkfs.ext4 /dev/[NOME DO GRUPO DO VOLUME]/[NOME DA PARTIÇÃO] // Partição é formatada como qualquer outra
+mkdir [Diretorio] // diretório onde será montada a partição
+mount /dev/[NOME DO GRUPO DO VOLUME]/[NOME DA PARTIÇÃO] [Diretorio] // Monta a partição 
+lvextend -L +[NUMERO EM QUE QUER SE EXPANDIR A PART] /dev/[NOME DO GRUPO DO VOLUME]/[NOME DA PARTIÇÃO // Aumenta o tamanho da partição
+resize2fs /dev/[NOME DO GRUPO DO VOLUME]/[NOME DA PARTIÇÃO] // Ajusta o tamanho da partição
+vgextend [NOME DO GRUPO DO VOLUME] /dev/sdb[LETRA IDENTIFICADORA DO DISCO][NUMERO DA PARTIÇÃO] // adiciona/extende o volume ao grupo de volumes
+
+#########################################################################################################################################
+Day 8 (DIspositivos externos/Placas offboard)
+
+Definições:
+	i/o // Dispositivos de entrada e saída
+	ttyS0, ttyS1, ttyS2 e ttyS3 // interfaces seriais do linux
+
