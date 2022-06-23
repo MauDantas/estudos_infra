@@ -84,5 +84,14 @@ Exemplo básico de Dockerfile
 
 	RUN apt-get update && apt-get install -y stress && apt-get clean
 
-	CMD stress -- cpu 1 --vm-bytes 64M --vm 1
+	CMD stress --cpu 1 --vm-bytes 64M --vm 1
 	
+Buildando Dockerfile em imagem:
+
+	docker image build -t [NOME DA IMAGEM] [CAMINHO DO DOCKERFILE]  //Constrói a Imagem que servirá de base para o container
+	
+	sudo docker container run -d [NOME DA IMAGEM] // diferente do Ubuntu, ngnix e centos que testamos anteriormente, a imagem será achada localmente e o container vai subir
+	
+###############################Day 2#######################################################
+	
+
