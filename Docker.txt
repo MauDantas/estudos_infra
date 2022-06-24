@@ -24,10 +24,13 @@ docker ps // também lista os containers
 
 sudo docker container run -ti hello-world // executa o container hello world que é ideal para conhecer instâncias básicas de containers. Ele roda, exibe a mensagem e morre.
 
--ti// container tem que ter um terminal e quando o container, acessaremos o mesmo
+docker container create // Cria o container mas não o executa
 
 docker container run -ti ubuntu // baixa distribuição do ubuntu e reencaminha usuario para dentro do container
 
+docker container inspect 
+	Um dos comandos mais importantes do Docker, inspect vai mostrar pra você tudo que está ligado aquele container. Sempre que você quiser saber quais associações e
+o que um container usa ou tem como base o docker container inspect vai mostrar pra você
 
 Saindo de containers:
 	exit // dentro do container, utilizando essa metodologia de entrar diretamente no container assim que o mesmo é iniciado, caso execute 
@@ -69,11 +72,16 @@ docker container run -d -m 128M nginx // Limita o uso de memória do container a
 
 sudo docker container update // atualiza recursos que o container pode utilizar
 
-Parâmetros de limites de uso de recursos
+Parâmetros de comandos de criação ou execução de containers
+	-d // dettach. Roda em background
 	-m ou --memory // limita o uso de memória ao container
 	--cpus // Valor relativo aos cores de cpu que a maquina pode usar. valores inteiros, como 1 ou 2 , dão capacidade ao container de usar 
 1 ou dois cores. Enquanto valores decimais se referem a percentagem de um core que pode ser utilizado
-
+	-ti// container tem que ter um terminal e quando o container, acessaremos o mesmo
+	-p // Relativo a port. binda na porta do container e do host separados por dois pontos, ex: -p 80:8080. Notar que não se pode bindar mais de uma porta ao mesmo tempo
+	-v // Relativo a volume. Define o volume com origem e destino
+	--volumes-from // puxa os volumes de outro container
+	-e // Relativo a environment. Passa uma variavel de ambiente como parâmetro
 
 Exemplo básico de Dockerfile
 
@@ -85,6 +93,15 @@ Exemplo básico de Dockerfile
 	RUN apt-get update && apt-get install -y stress && apt-get clean
 
 	CMD stress --cpu 1 --vm-bytes 64M --vm 1
+
+Dissecando exemplo básico de docker file
+	FROM debian // Origem ou nome da imagem que será usada de base para o container
+	LABEL app="Giropops" // Label é um identificador o qual será possível ser consultado quando você usar o inspect para ver as características do container
+	ENV MAUMAS="Obeso" // É uma variável de ambiente. Uma consulta por exemplo via terminal as variaveis de ambiente com o o nome MAUMAS retornará o valor Obeso normalmente
+	RUN apt-get update && apt-get install -y stress && apt-get clean // Como explicado no inicio do curso. Os comandos run ficam na primeira camada de abstração. 
+Ou seja, esse container tem como caracterísitica principal rodar linux e a secundária, ou de segundo nível é estressar a máquina
+	CMD stress --cpu 1 --vm-bytes 64M --vm 1 // CMD sendo acronimo pra command (comando), utiliza a interface disponibilizada para executar um comando. Nesse caso,
+o comando é estressar a maquina utilizando 100% da CPU 1 e 64 MB de memoria RAM
 	
 Buildando Dockerfile em imagem:
 
@@ -94,4 +111,40 @@ Buildando Dockerfile em imagem:
 	
 ###############################Day 2#######################################################
 	
+
+sudo docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops debian
+	//Comando para montar uma imagem debian ligando uma imagem dentro do Container a um destino do sistema operacional
+	dst // relativo a onte ficará alocada dentro do container a imagem que será compartilhada com o SO
+	src // relativo a onde ficará no SO os arquivos salvos no container. Ou seja, se dentro do container você
+escrever algo no volume /giropops logo você terá esses arquivos disponíveis no Sistema operacional local em /opt/giropops
+
+sudo docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops,ro debian
+	// Usa volumes do tipo bind da mesma forma que anteriormente porém read only. Ou seja. O container não pode alterar os arquivos que já estão
+no SO. Ou seja, é útil quando você quer que uma aplicação acesse dados, por exemplo, de outra aplicação mas você não quer que por um erro de dev
+ou de rotinas programadas alterar aqueles arquivos. Usando ro, você tem um isolamento maior
+
+docker volume ls // Lista volumes disponíveis
+
+sudo docker volume create giropops // cria um volume chamado giropops
+	//Todos os volumes no Docker são salvos em /var/lib/docker/volumes
+	//No nosso exemplo giropops, todos os arquivos em /var/lib/docker/volumes/giropops/_data/ estarão disponíveis aos containers que tiverem acesso ao volume
+
+sudo docker container run -it --mount type=volume,src=giropops,dst=/giropops debian
+	//Agora utilizando volumes docker, nós selecionamos o tipo volume e o nome do volume que definimos como giropos
+
+docker volume rm giropops // Para remover um volume você tem que excluir todos os containers que usam o volume. Mesmo que esteja parado
+
+docker volume prune // Apaga todos os volumes que não estão sendo usados por containers. Tem que se tomar muito cuidado porque podem haver dados sensíveis que podem ser perdidos.
+
+sudo docker container prune // Apaga todos os containers que não estão em uso.
+
+sudo docker container create -v /data --name dbdados centos
+	//Cria um container com um volume associado no diretorio do host a esquerda e do container a direita (ex: /opt/giropops:/giropops)
+	// O exemplo usa a pasta /data, que será usado pelo banco de dados
+	// Como não foi colocado nada a esquerda ele é salvo automaticamente em /var/lib/docker/volumes
+	// Para saber o caminho absoluto, use o inspect
+	
+docker run -d -p 5432:5432 --nome pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
+	//Exemplo de configuração válida para subir um banco postgresql
+	//Notar que não se pode bindar mais de  uma porta ao mesmo tempo 
 
