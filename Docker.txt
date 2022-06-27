@@ -79,9 +79,11 @@ Parâmetros de comandos de criação ou execução de containers
 1 ou dois cores. Enquanto valores decimais se referem a percentagem de um core que pode ser utilizado
 	-ti// container tem que ter um terminal e quando o container, acessaremos o mesmo
 	-p // Relativo a port. binda na porta do container e do host separados por dois pontos, ex: -p 80:8080. Notar que não se pode bindar mais de uma porta ao mesmo tempo
+	-P // Também relativo a port. Mas espera que uma porta seja consultada e redireciona ela a uma porta aleatória ao invés de uma pré-determinada
 	-v // Relativo a volume. Define o volume com origem e destino
 	--volumes-from // puxa os volumes de outro container
 	-e // Relativo a environment. Passa uma variavel de ambiente como parâmetro
+	--no-cache // Não utiliza o Cache local para montar a imagem e baixa todos os arquivos atualizados
 
 Exemplo básico de Dockerfile
 
@@ -185,6 +187,19 @@ LABEL version="1.0.0"
 
 VOLUME /var/www/html
 EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apachectl"]
+CMD ["-D", "FOREGROUND"]
+
+//Expose se refere que o container espera comunicação na porta 80. O redirecionamento, porém é feita de maneira aleatória. Equivalente ao -P
+//Entrepoint diz que o comando é o principal processo do container. No caso, o principal é o Apache
+//CMD executa um comando no Shell/Bash. Nesse caso, ele está interagindo com o Apache e colocando ele em primeiro plano
+
+CMD["parametros", "comandos"] // Sintaxe exec. Se utiliza de listas para executar os parâmetros. Faz a mesma coisa que a sintaxe modo shell,mas só ele pode ser utilizado junto a ENTRYPOINT
+CMD comando --parametros // Executa o comando igual ao shell/bash. Sintaxe é conhecida como Shell. Não pode ser executado em um arquivo que contenha ENTRYPOINT.
+
+
+sudo docker image build -t [NOME DA IMAGEGEM] [CAMINHO DO DOCKERFILE]
 
 
 
