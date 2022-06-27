@@ -22,7 +22,7 @@ docker version // Verifica a versão do docker instalado
 docker container ls // Lista os containers
 docker ps // também lista os containers
 
-sudo docker container run -ti hello-world // executa o container hello world que é ideal para conhecer instâncias básicas de containers. Ele roda, exibe a mensagem e morre.
+docker container run -ti hello-world // executa o container hello world que é ideal para conhecer instâncias básicas de containers. Ele roda, exibe a mensagem e morre.
 
 docker container create // Cria o container mas não o executa
 
@@ -49,10 +49,10 @@ Entrando no container:
 	docker container attach [CONTAINER_ID] // Entra no container no processo principal. Ou seja, se você sair com exit você vai matar o Container
 	docker exec -it [CONTAINER_ID] bash// Abre uma nova instância do Bash. Portanto, quando você executar exit, você mata o bash que você criou e não o inicial
 
-sudo docker container run -it nginx // Exemplo de como baixar um container com serviço como principal. O indicado é não usar -it. Pois se você
+docker container run -it nginx // Exemplo de como baixar um container com serviço como principal. O indicado é não usar -it. Pois se você
 usar ele o processo do Ngnix, que é o principal, vai rodar em primeiro plano.
 
-sudo docker container run -d nginx // desa forma, o container do ngnix vai rodar em segundo plano
+docker container run -d nginx // desa forma, o container do ngnix vai rodar em segundo plano
 
 docker container start // inicia um container
 docker container stop // para um container
@@ -70,7 +70,7 @@ docker container top // análogo ao top do linux
 
 docker container run -d -m 128M nginx // Limita o uso de memória do container a 128 M, poderia ter sido usado --memory como análogo
 
-sudo docker container update // atualiza recursos que o container pode utilizar
+docker container update // atualiza recursos que o container pode utilizar
 
 Parâmetros de comandos de criação ou execução de containers
 	-d // dettach. Roda em background
@@ -95,11 +95,15 @@ Exemplo básico de Dockerfile
 	CMD stress --cpu 1 --vm-bytes 64M --vm 1
 
 Dissecando exemplo básico de docker file
-	FROM debian // Origem ou nome da imagem que será usada de base para o container
-	LABEL app="Giropops" // Label é um identificador o qual será possível ser consultado quando você usar o inspect para ver as características do container
+	FROM debian 
+	// Origem ou nome da imagem que será usada de base para o container
+	LABEL app="Giropops" 
+	// Label é um identificador o qual será possível ser consultado quando você usar o inspect para ver as características do container
 	ENV MAUMAS="Obeso" // É uma variável de ambiente. Uma consulta por exemplo via terminal as variaveis de ambiente com o o nome MAUMAS retornará o valor Obeso normalmente
-	RUN apt-get update && apt-get install -y stress && apt-get clean // Como explicado no inicio do curso. Os comandos run ficam na primeira camada de abstração. 
-Ou seja, esse container tem como caracterísitica principal rodar linux e a secundária, ou de segundo nível é estressar a máquina
+	RUN apt-get update && apt-get install -y stress && apt-get clean 
+	// Como explicado no inicio do curso. Os comandos run ficam na primeira camada de abstração. São comandos executados durante a criação do container.
+Cada RUN é uma camada de abstração então é por isso que só tem um RUN e não vários. Todas as camadas são Readonly e não se comunicam.
+Ou seja, esse container tem como caracterísitica principal o que está no RUN que é instalar o aplicativo de estressar a máquina e atualizar os pacotes
 	CMD stress --cpu 1 --vm-bytes 64M --vm 1 // CMD sendo acronimo pra command (comando), utiliza a interface disponibilizada para executar um comando. Nesse caso,
 o comando é estressar a maquina utilizando 100% da CPU 1 e 64 MB de memoria RAM
 	
@@ -107,44 +111,80 @@ Buildando Dockerfile em imagem:
 
 	docker image build -t [NOME DA IMAGEM] [CAMINHO DO DOCKERFILE]  //Constrói a Imagem que servirá de base para o container
 	
-	sudo docker container run -d [NOME DA IMAGEM] // diferente do Ubuntu, ngnix e centos que testamos anteriormente, a imagem será achada localmente e o container vai subir
+	docker container run -d [NOME DA IMAGEM] // diferente do Ubuntu, ngnix e centos que testamos anteriormente, a imagem será achada localmente e o container vai subir
 	
 ###############################Day 2#######################################################
 	
 
-sudo docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops debian
+docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops debian
 	//Comando para montar uma imagem debian ligando uma imagem dentro do Container a um destino do sistema operacional
 	dst // relativo a onte ficará alocada dentro do container a imagem que será compartilhada com o SO
 	src // relativo a onde ficará no SO os arquivos salvos no container. Ou seja, se dentro do container você
 escrever algo no volume /giropops logo você terá esses arquivos disponíveis no Sistema operacional local em /opt/giropops
 
-sudo docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops,ro debian
+docker container run -it --mount type=bind,src=/opt/giropops,dst=/giropops,ro debian
 	// Usa volumes do tipo bind da mesma forma que anteriormente porém read only. Ou seja. O container não pode alterar os arquivos que já estão
 no SO. Ou seja, é útil quando você quer que uma aplicação acesse dados, por exemplo, de outra aplicação mas você não quer que por um erro de dev
 ou de rotinas programadas alterar aqueles arquivos. Usando ro, você tem um isolamento maior
 
 docker volume ls // Lista volumes disponíveis
 
-sudo docker volume create giropops // cria um volume chamado giropops
+docker volume create giropops // cria um volume chamado giropops
 	//Todos os volumes no Docker são salvos em /var/lib/docker/volumes
 	//No nosso exemplo giropops, todos os arquivos em /var/lib/docker/volumes/giropops/_data/ estarão disponíveis aos containers que tiverem acesso ao volume
 
-sudo docker container run -it --mount type=volume,src=giropops,dst=/giropops debian
+docker container run -it --mount type=volume,src=giropops,dst=/giropops debian
 	//Agora utilizando volumes docker, nós selecionamos o tipo volume e o nome do volume que definimos como giropos
+
+docker volume inspect giropops // Inspect para volumes
 
 docker volume rm giropops // Para remover um volume você tem que excluir todos os containers que usam o volume. Mesmo que esteja parado
 
 docker volume prune // Apaga todos os volumes que não estão sendo usados por containers. Tem que se tomar muito cuidado porque podem haver dados sensíveis que podem ser perdidos.
 
-sudo docker container prune // Apaga todos os containers que não estão em uso.
+docker container prune // Apaga todos os containers que não estão em uso.
 
-sudo docker container create -v /data --name dbdados centos
+docker container create -v /data --name dbdados centos
 	//Cria um container com um volume associado no diretorio do host a esquerda e do container a direita (ex: /opt/giropops:/giropops)
 	// O exemplo usa a pasta /data, que será usado pelo banco de dados
 	// Como não foi colocado nada a esquerda ele é salvo automaticamente em /var/lib/docker/volumes
-	// Para saber o caminho absoluto, use o inspect
+	// Para saber o caminho absoluto, use o inspect na seção Mount
 	
-docker run -d -p 5432:5432 --nome pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
+docker run -d -p 5432:5432 --name pgsql1 --volumes-from dbdados -e POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
 	//Exemplo de configuração válida para subir um banco postgresql
 	//Notar que não se pode bindar mais de  uma porta ao mesmo tempo 
+
+docker run -d -p 5432:5432 --name pgsql1 --mount type=volume,src=dados_locais,dst=/data -e POSTGRESQL_USER=docker -e POSTGRESQL_PASS=docker -e POSTGRESQL_DB=docker kamui/postgresql
+	// Agora criando o mesmo serviço usando um volume local criado chamado dados_locais
+	
+
+BACKUP
+
+	docker container run -it --mount type=volume,src=[VOLUME_LOCAL_PARA_BACKUP], dst=[VOLUME_NO_CONTAINER_PARA_BACKUP] --mount type=bind,src=[DIRETORIO_DE_BACKUP_LOCAL],dst=/backup tar -cvf /backup/[NOME_DO_SERVIÇO_QUE_ESTAMOS_FAZENDO_BACKUP].tar [DIRETORIO_OU_ARQUIVO_QUE_ESTAMOS_FAZENDO_BACKUP]
+	//Montamos duas imagens para não alterarmos a imagem em produção que no caso é [VOLUME_LOCAL_PARA_BACKUP]
+	//Utilizando apenas comandos linux, compactamos em um arquivo tar as informações do volume e salvamos no diretorio de backup que criamos.
+	
+	docker run -ti --volumes-from dbdados -v $(pwd):/backup debian tar -cvf /backup/backup.tar /data
+	//equivalente. Fará o backup no diretorio local de volumes, na pasta backup
+
+É importante que você crie a sua imagem e não a de terceiros por causa das vulnerabilidades existentes em imagens.
+Recomenda-se o Alpine porque é uma distribuição pequena onde você pode ter controle e instalar o que precisar
+
+Não é possível usar tipo bind em Dockerfile
+
+FROM debian
+RUN apt-get update && apt-get install -y apache2 && apt-get clean
+ENV APACHE_LOCK_DIR="/var/lock"
+ENV APACHE_PID_FILE="/var/run/apache2.pid"
+ENV APACHE_RUN_USER="www-data"
+ENV APACHE_RUN_GROUP="www-data"
+ENV APACHE_LOG_DIR="/var/log/apache2"
+
+LABEL description="Webserver"
+LABEL version="1.0.0"
+
+VOLUME /var/www/html
+EXPOSE 80
+
+
 

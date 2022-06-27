@@ -213,6 +213,7 @@ tmux CTRL+b+% // Divide a tela no meio na vertical
 		CTRL+b+SetaPraDireita // Vai pra tela direita
 tmux CTRL+b+w // Resumo de janelas abertas
 ctrl+b(pressionados)+setas // Ajuste de tamanho da janela
+ctrl+b+[ // permite que você navege pra cima e pra baixo no texto do terminal
 exit // No contexto do tmux, vai fechando as janelas duplicadas. Ao fechar todos, o tmux é finalzado
 
 
