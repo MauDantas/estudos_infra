@@ -202,4 +202,201 @@ CMD comando --parametros // Executa o comando igual ao shell/bash. Sintaxe é co
 sudo docker image build -t [NOME DA IMAGEGEM] [CAMINHO DO DOCKERFILE]
 
 
+Adicionando a seguinte linha no Dockerfile:
+
+	COPY index.html /var/www/html/
+
+	//Copia um arquivo local pra dentro do apache2
+	//Copia um arquivo no Caminho local para o caminho dentro do container
+
+
+Alternativa ao copy:
+
+	ADD index.html /var/www/html/
+
+	//Consegue fazer downloads 
+	//Descompacta arquivos Tar
+	// Faz o mesmo que o COPY
+
+Adicionando USER:
+	
+	USER www-data
+	
+	//utiliza o usuário indicado e não o usuario root como padrão
+	//Necessita que você dê permissão ao usuario para acessar e modificar os diretorios utilizados pelo Apache
+
+Adicionando WORKDIR:
+
+	WORKDIR /var/www/htlm/
+
+	//Toma o diretório setado como diretório de trabalho inicial
+	// Ao acessar o container, é direcionado diretamente a ele
+	
+	Exemplo, ao utilizar o Apache, é necessario acesso a uma ou mais pasta em /var/lock, /var/www e /var/log
+		RUN chown www-data:www-data /var/lock && chown www-data:www-data /var/www && chown www-data:www-data /var/log
+		
+Criando container/Dockerfile rodando aplicação direto (Container/Dockerfile para rodar uma aplicação em uma linguagem):
+
+	FROM golang
+
+	WORKDIR /app
+
+	ADD . /app
+
+	RUN go build -o meugo
+
+	ENTRYPOINT ./meugo
+
+Conceito de multistage aplicado abaixo
+
+Usando a distribuição Alpine (mais leve que outras) pra rodar a aplicação GO
+
+	FROM golang
+
+	WORKDIR /giropops
+
+	ADD . /app
+
+	FROM alpine
+	WORKDIR /app
+	COPY --from=buildando /app/meugo /giropops/
+	
+	ENTRYPOINT ./meugo
+===============================================================
+FROM golang AS buildando
+
+ADD . /src
+WORKDIR /src
+RUN go build -o goapp
+
+
+FROM alpine:3.1
+
+WORKDIR /app
+COPY --from=buildando /src/goapp /app
+ENTRYPOINT ./goapp
+
+===============================================================
+CONCEITOS
+	- Camadas: Camadas de abstração e onde você realmente consegue escrever
+	- Multiline: Para não criar varias camadas, podes quebrar uma camada em várias em linhas (um RUN em varias linhas)
+	- .dockerignore // Similar ao git ignore. Esses arquivos listados aqui serão ignorados
+	- ENTRYPOINT é o principal processo em uma maquina
+	- ENTRYPOINT e CMD no mesmo docker file obriga a utilização do modo exec
+	- SCRIPT DE START não é elegante. 
+	- Você consegue usar variaveis de ambiente criadas no Dockerfile dentro do proprio
+	- ADD Consegue fazer downloads, descompacta arquivos Tar e faz o mesmo que o COPY
+	- ARG exige um argumento ou possibilita existencia de argumento no build
+	- HEALTHCHECK Executa uma rotina que condiciona o funcionamento do container
+
+=================================================================
+	ADD => Copia novos arquivos, diretórios, arquivos TAR ou arquivos remotos e os adicionam ao filesystem do container;
+
+	CMD => Executa um comando, diferente do RUN que executa o comando no momento em que está "buildando" a imagem, o CMD executa no início da execução do container;
+
+	LABEL => Adiciona metadados a imagem como versão, descrição e fabricante;
+
+	COPY => Copia novos arquivos e diretórios e os adicionam ao filesystem do container;
+
+	ENTRYPOINT => Permite você configurar um container para rodar um executável, e quando esse executável for finalizado, o container também será;
+
+	ENV => Informa variáveis de ambiente ao container;
+
+	EXPOSE => Informa qual porta o container estará ouvindo;
+
+	FROM => Indica qual imagem será utilizada como base, ela precisa ser a primeira linha do Dockerfile;
+
+	MAINTAINER => Autor da imagem; 
+
+	RUN => Executa qualquer comando em uma nova camada no topo da imagem e "commita" as alterações. Essas alterações você poderá utilizar nas próximas instruções de seu Dockerfile;
+
+	USER => Determina qual o usuário será utilizado na imagem. Por default é o root;
+
+	VOLUME => Permite a criação de um ponto de montagem no container;
+
+	WORKDIR => Responsável por mudar do diretório / (raiz) para o especificado nele
+
+=================================================================	
+	
+	
+
+docker container rm -f $(docker ps -q) // força apagar todos os containers
+ddocker image rm -f $(docker image ls -q) // força apagar todas as imagens
+
+
+docker commit -m "NOME_DA_IMAGEM" ID_DO_CONTAINER // transforma a instância do container atual em imagem
+
+Tageando uma imagem
+
+	docker image tag 281f58e95b0a maudantas/meuapache:5.0
+
+Mandando pra o dockerhub 
+	docker login 
+	docker push maudantas/meuapache:5.0
+	
+docker registry é um repositório de imagens docker. Se você usar um IP, ele enviará oara o registry ao invés do docker hub
+
+docker container run -d -p 5000:5000 --restart=always --name registry registry:2
+
+########################################################################
+#######################################Day 3############################
+########################################################################
+
+Para fazer a instalação do Docker Machine no Linux, faça:
+
+# curl -L https://github.com/docker/machine/releases/download/v0.16.1
+/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine
+# chmod +x /tmp/docker-machine 
+# sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+
+
+Para seguir com a instalação no macOS:
+
+# curl -L https://github.com/docker/machine/releases/download/v0.16.1
+/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine 
+# chmod +x /usr/local/bin/docker-machine
+
+Para seguir com a instalação no Windows caso esteja usando o Git bash:
+
+# if [[ ! -d "$HOME/bin" ]]; then mkdir -p "$HOME/bin"; fi
+# curl -L https://github.com/docker/machine/releases/download/v0.16.1
+/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe"
+# chmod +x "$HOME/bin/docker-machine.exe"
+
+
+Para verificar se ele foi instalado e qual a sua versão, faça:
+
+# docker-machine version
+
+# docker-machine create --driver virtualbox linuxtips
+
+# docker-machine ls
+
+# docker-machine env linuxtips
+
+# eval "$(docker-machine env linuxtips)"
+
+# docker container ls
+
+# docker container run busybox echo "LINUXTIPS, VAIIII"
+
+# docker-machine ip linuxtips
+
+# docker-machine ssh linuxtips
+
+# docker-machine inspect linuxtips
+
+# docker-machine stop linuxtips
+
+# docker-machine ls 
+
+# docker-machine start linuxtips
+
+# docker-machine rm linuxtips
+
+# eval $(docker-machine env -u)
+
+
+
+
 
