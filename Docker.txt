@@ -396,7 +396,29 @@ Para verificar se ele foi instalado e qual a sua versão, faça:
 
 # eval $(docker-machine env -u)
 
+DOCKER SWARM
+
+Conceitos
+	Docker Manager // É quem sabe onde estão todos os containers e microserviços
+		Pra o Cluster swarm estar ativo e funcionando eu preciso ter pelo menos 51% dos meus Cluster Manager funcionando
+
+	Docker Worker // Quem executa de fato as tarefas
 
 
+docker swarm init // inicia o cluster
 
+docker-swarm join-token (manager) // gera o token para adicionar um node ao cluster
 
+docker node rm  // Remove um node. Caso seja um manager, tem que ser demovido a worker antes de ser excluído
+
+docker-swarm join-token --rotate manager // troca o manager do cluster
+
+docker node update --availability pause NODENAME // Node não recebe novos containers
+
+docker node update --availability active NODENAME // Node volta a receber containers
+
+docker node update --availability drain NODENAME // Node desativa os containers atuais e não recebe novos containers
+
+Services // Serve para escalar uma aplicação a vários containers. Ou seja, que um conjunto de containers atuem com um propósito.
+
+docker service create --name webserver --replicas 3 -p 8080:80 nginx // Cria três containers com serviços Nginx distribuídos entre os clusters (não sobrecarrega os nodes)
