@@ -427,6 +427,7 @@ docker service rm // remove o serviço
 
 	--network-add // adiciciona uma rede a um serviço
 	--publish-add // adiciona uma porta a um serviço
+	
 
 # docker swarm init
 
@@ -470,6 +471,8 @@ docker service rm // remove o serviço
 
 # docker network create -d overlay giropops
 
+// quando for criar uma rede overlay, a razão será para que os serviços consigam conversar entre si através dos nomes (DNS) dos containers
+
 # docker network ls
 
 # docker network inspect giropops
@@ -482,3 +485,17 @@ docker service rm // remove o serviço
 
 # docker service update <OPCOES> <Nome_Service> 
 
+Secret //Em um cluster Swarm, sempre que você precisar mandar um dado mais sensível para um container que não deveria ficar no compose ou dockerfile.
+	- O secret é um arquivo
+	- Se você quiser uma variável de ambiente terá que manipular esse arquivo
+	- O kubernetes consegue criar diretamente essa variável de ambiente
+
+echo 'minha secret' | docker secret create 
+docker secret create minha_secret minha_secret.txt
+docker secret inspect minha_secret
+docker secret ls
+docker secret rm minha_secret
+docker service create --name app --detach=false --secret db_pass  minha_app:1.0
+docker service create --detach=false --name app --secret source=db_pass,target=password,uid=2000,gid=3000,mode=0400 minha_app:1.0
+ls -lhart /run/secrets/
+docker service update --secret-rm db_pass --detach=false --secret-add source=db_pass_1,target=password app
