@@ -499,3 +499,26 @@ docker service create --name app --detach=false --secret db_pass  minha_app:1.0
 docker service create --detach=false --name app --secret source=db_pass,target=password,uid=2000,gid=3000,mode=0400 minha_app:1.0
 ls -lhart /run/secrets/
 docker service update --secret-rm db_pass --detach=false --secret-add source=db_pass_1,target=password app
+
+DOCKER Compose
+
+version // Versão
+services// respectivo aos serviços rodando naquele compose
+	image // imagem do serviços
+	deploy 
+		replicas // quantidade de containers rodando serviços
+		resources // recursos destinados aos containers
+			limits // limite máximo de recursos
+				cpus // Em percentagem, quantidade de recurso alocado para cada container
+				memory // Em valor absoluto, quantidade de memoria alocada para cada container
+			restart_policy // Há containers que são persistentes e ficam sempre tentando reiniciar. Aqui é especificada essa opção
+		ports // Redirecionamento de porta do container para os hosts
+		networks // rede virtual a qual o container está inserido
+
+Primeiro Compose:
+
+
+
+docker stack deploy -c docker-compose.yml giropops // Para subir o compose
+
+
