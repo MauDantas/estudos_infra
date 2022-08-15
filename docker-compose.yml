@@ -3,6 +3,9 @@ services:
   web:
     image: nginx
     deploy:
+      placement: 
+        constraints:
+        - node.labels.dc == UK
       replicas: 5
       resources: 
         limits:
@@ -14,5 +17,19 @@ services:
       - "8080:80"
     networks:
       - webserver
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports: 
+    - "8888:8080"
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role ==manager]
+    networks:
+    - webserver
+  
 networks:
   webserver:
+
