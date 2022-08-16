@@ -503,16 +503,21 @@ DOCKER Compose
 
 version // Versão
 services// respectivo aos serviços rodando naquele compose
-	image // imagem do serviços
+	image // imagem docker do serviços
+	ports // Redirecionamento de porta do container para os hosts funciona da maneira "porta_container:porta_local". Se você não quer que o recursos
+seja acessado fora do cluster, preenha da maneira "porta_container"
+	networks // rede virtual a qual o container está inserido
 	deploy 
-		replicas // quantidade de containers rodando serviços
+		replicas // quantidade de replicas rodando serviços. Se for definido no deplou o "mode" global, todos os nodes do cluster conteriam um container, 
+caso contrário, é um container para cada réplica. 
+		update_config //configuração de update
+			paralelism // O docker tentará fazer tudo ao mesmo tempo. Se você utilizar a opção paralelismo, 
 		resources // recursos destinados aos containers
 			limits // limite máximo de recursos
 				cpus // Em percentagem, quantidade de recurso alocado para cada container
 				memory // Em valor absoluto, quantidade de memoria alocada para cada container
 			restart_policy // Há containers que são persistentes e ficam sempre tentando reiniciar. Aqui é especificada essa opção
-		ports // Redirecionamento de porta do container para os hosts
-		networks // rede virtual a qual o container está inserido
+		
 
 constraints: //constantes
 	  - node.labels.dc == UK // Parâmetro necessario para inicialização do serviço definido por nós
