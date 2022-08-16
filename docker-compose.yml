@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 services:
   redis:
     image: redis:alpine
@@ -9,7 +9,7 @@ services:
     deploy:
       replicas: 2
       update_config:
-        paralelism: 1
+        paralelism: 2
         delay: 10s
       restart_policy: 
         condition: on-failure
@@ -45,7 +45,7 @@ services:
     deploy:
       replicas: 1
       update_config:
-        paralelism: 2
+        paralelism: 1
         delay: 10s
         restart_policy: 
           on-failure

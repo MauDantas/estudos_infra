@@ -507,16 +507,34 @@ services// respectivo aos serviços rodando naquele compose
 	ports // Redirecionamento de porta do container para os hosts funciona da maneira "porta_container:porta_local". Se você não quer que o recursos
 seja acessado fora do cluster, preenha da maneira "porta_container"
 	networks // rede virtual a qual o container está inserido
-	deploy 
-		replicas // quantidade de replicas rodando serviços. Se for definido no deplou o "mode" global, todos os nodes do cluster conteriam um container, 
+	depends_on // O serviço só continua rodando se outro container do compose continuar funcionando
+	volumes // Definindo volume assim como do docker file, da pasta local para a pasta do container "pasta local:pasta container"
+	stop-grace-period // o tempo que é dado ao container para que ele seja desligado sem que seja feito o stop forçado
+	deploy
+		mode //
+			replicated // consegue escolher a quantidade de réplicas
+			global // É criada uma réplica em cada nó
+		replicas // quantidade de replicas rodando serviços. Se for definido no deplou o "mode" global, todos os nodes do cluster conteriam um container.
 caso contrário, é um container para cada réplica. 
+		label // Identificação do serviço
 		update_config //configuração de update
-			paralelism // O docker tentará fazer tudo ao mesmo tempo. Se você utilizar a opção paralelismo, 
+			paralelism // O docker tentará fazer tudo ao mesmo tempo. Se você utilizar a opção paralelismo, você dirá quantas instâncias docker ele irá trabalhar ao mesmo tempo.
+			delay // intervalos entre cada atualização de configuração, ou seja, intervalo entre os paralelismos
+			order //  entre start_first e stop_first você decide se os serviços são paralizados antes ou não
+		rollback_config// para fazer rollback
+			paralelism
+			delay
+			failure_action: // tem duas opções ou continua tentando fazer rollback ou pausa. O normal é ser continua e investigar os problemas
+			monitor // Coloca o tempo para monitorar se há problemas no rollback
+			order //  entre start_first e stop_first você decide se os serviços são paralizados antes ou não
 		resources // recursos destinados aos containers
 			limits // limite máximo de recursos
 				cpus // Em percentagem, quantidade de recurso alocado para cada container
 				memory // Em valor absoluto, quantidade de memoria alocada para cada container
-			restart_policy // Há containers que são persistentes e ficam sempre tentando reiniciar. Aqui é especificada essa opção
+		restart_policy // Há containers que são persistentes e ficam sempre tentando reiniciar. Aqui é especificada essa opção
+			condition // Especifica quando ele vai tentar reiniciar, por exemplo on-failure somente quando o serviço principal falha
+			max_attempts // O numero especificado aqui dia quantas vezes ele vai tentar reiniciar
+			window // Relativo as opções anteriores. A cada quantidade de tempo especificada o contador é reiniciado
 		
 
 constraints: //constantes
@@ -650,3 +668,4 @@ services:
     deploy:
       replicas: 2
       update
+
