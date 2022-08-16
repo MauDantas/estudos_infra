@@ -1,18 +1,83 @@
 version: "3"
 services:
-  web:
-    image: nginx
+  redis:
+    image: redis:alpine
+    ports: 
+    - "6379"
+    networks:
+    - frontend
     deploy:
-      replicas: 5
-      resources: 
-        limits:
-          cpus: "0.1"        
-          memory: 50M
+      replicas: 2
+      update_config:
+        paralelism: 1
+        delay: 10s
+      restart_policy: 
+        condition: on-failure
+  db:
+    image: postgres:9.4
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    networks:
+    - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+  vote:
+    image: dockersamples/examplevotingapp_vote:before
+    ports: 
+    - 5000:80
+    networks:
+    - frontend
+    depends_on:
+    - redis
+    deploy:
+      replicas: 2
+      update_config:
+        paralelism: 2
       restart_policy:
         condition: on-failure
-    ports: 
-      - "8080:80"
+  result:
+    image: dockersamples/examplevottingapp_result:before
+    ports:
+    - 5001:80
     networks:
-      - webserver
+    - backend
+    deploy:
+      replicas: 1
+      update_config:
+        paralelism: 2
+        delay: 10s
+        restart_policy: 
+          on-failure
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+    - frontend
+    - backend
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [noed.role == manager]
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:  
+    - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+    - "/var/run/docker.sock:/var/run/dock.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 networks:
-  webserver:
+  frontend:
+  backend:
+volumes:
+  db-data:
+
