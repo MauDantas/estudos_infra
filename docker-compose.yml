@@ -1,83 +1,68 @@
 version: "3.7"
 services:
-  redis:
-    image: redis:alpine
-    ports: 
-    - "6379"
-    networks:
-    - frontend
-    deploy:
-      replicas: 2
-      update_config:
-        paralelism: 2
-        delay: 10s
-      restart_policy: 
-        condition: on-failure
-  db:
-    image: postgres:9.4
+  prometheus:
+    image: linuxtips/prometheus_alpine
     volumes:
-    - db-data:/var/lib/postgresql/data
+      - ./conf/prometheus/:/etc/prometheus
+      - prometheus_data:/var/lib/prometheus
+    ports: 
+      - 9090:9090
+  node-exporter:
+    image: linuxtips/node-exporter_alpine
+    hostname: '{{.Node.ID}}'
+    volumes:
+    - /proc:/usr/proc
+    - /sys:/usr/sys
+    - /:/rootfs
     networks:
     - backend
     deploy:
-      placement:
-        constraints: [node.role == manager]
-  vote:
-    image: dockersamples/examplevotingapp_vote:before
+      mode:
+        global
+    ports:
+      -9100:9100
+  alertmanager:
+    image: linuxtips/alertmanager_alpine
+    volumes:
+    - ./conf/alertmanager/:/etc/alertmanager;
     ports: 
-    - 5000:80
+    - 9093:9093
     networks:
-    - frontend
+    - backend
     depends_on:
     - redis
-    deploy:
-      replicas: 2
-      update_config:
-        paralelism: 2
-      restart_policy:
-        condition: on-failure
-  result:
-    image: dockersamples/examplevottingapp_result:before
+  cadvisor:
+    image: google/cadvisor
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - ./conf/alertmanager/:/etc/alertmanager/
     ports:
-    - 5001:80
+    - 9093:9093
     networks:
     - backend
-    deploy:
-      replicas: 1
-      update_config:
-        paralelism: 1
-        delay: 10s
-        restart_policy: 
-          on-failure
-  worker:
-    image: dockersamples/examplevotingapp_worker
+  cadvisor:
+    image: google/cadvisor
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+    - 8080:8080
+    networks:
+    - backend
+  grafana:
+    image: nopp/grafana_alpine
+    depends_on:
+      - prometheus
     networks:
     - frontend
     - backend
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels: [APP=VOTING]
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-      placement:
-        constraints: [noed.role == manager]
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:  
-    - "8080:8080"
-    stop_grace_period: 1m30s
-    volumes:
-    - "/var/run/docker.sock:/var/run/dock.sock"
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+    ports:
+      -3000:3000
 networks:
   frontend:
   backend:
 volumes:
-  db-data:
-
+  prometheus_data:

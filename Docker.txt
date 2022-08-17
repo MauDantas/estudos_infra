@@ -631,21 +631,28 @@ networks:
 
 $$$$$$$$$$$$$ docker node update --label-add dc=UK nomedonó // para que o serviço suba já que adicionamos um label
 
-Quarto compose
+Quarto compose -  DEFEITUOSO
 
-version: "3"
+version: "3.7"
 services:
   redis:
     image: redis:alpine
     ports: 
-    - "6379"
+      - "6379"
     networks:
-    - frontend
+      - frontend
     deploy:
       replicas: 2
       update_config:
-        paralelism: 2
+        parallelism: 1
         delay: 10s
+        order: "stop-first"
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: continue
+        monitor: 60s
+        order: "stop-first"
       restart_policy: 
         condition: on-failure
   db:
@@ -667,5 +674,55 @@ services:
     - redis
     deploy:
       replicas: 2
-      update
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+  result:
+    image: dockersamples/examplevotingapp_result:before
+    ports:
+    - 5001:80
+    networks:
+    - backend
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy: 
+        condition: on-failure
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+    - frontend
+    - backend
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:  
+    - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+    - "/var/run/docker.sock:/var/run/dock.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+networks:
+  frontend:
+  backend:
+volumes:
+  db-data:
+
 
