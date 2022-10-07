@@ -115,7 +115,7 @@ Groups:
 	- Você poderá attachar permission policies ou políticas de permissão da AWS ou criar políticas atualizadas
 	- A AWS já conta com 769 políticas tais como:
 		* Administrator Access // Controle total
-		* AmazonEC2ReadOnlyAccess // usuário tem permissão apenas leitura nas maquinas EC2
+		* AmazonEC2ReadOnlyAccess // usuário tem permissão apenas leitura nas maquinas EC2. Não pode parar nem iniciar as máquinas.
 		* AmazonEC2FullAccess // Usuário tem acesso completo as máquinas EC2 com privilégios
 		* AmazonEC2InstantConnect // Versão específica pra possibilitar acesso SSH
 IAM users:
@@ -125,7 +125,11 @@ IAM users:
 	- Acces types:
 		* Programatic Access // Utiliza ID e secret pra logar. Geralmente ideal quando usando ferramenta terceira
 		* Console Password // acesso ao console. Ideal para usuários humanos
-		*
+	 - Pode-se attachar policies diretamente a um user
+	 - ARN (Amazon Resource Name) // nome do recurso específico criado por você que pode ser um usuário outro
+	 - Ativar MFA para usuários é boa prática
+	 - Recuper a senha IAM // IAM => Users => Clica no usuário => Security Credentials => Console password => Manage
+	 - 
 	
 		
 	
