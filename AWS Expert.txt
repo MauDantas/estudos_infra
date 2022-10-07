@@ -86,6 +86,11 @@ Para alterar/criar organizações: organization
 
 - Criação de Policies
 
+
+#########################################################################################
+#############Day3########################################################################
+#########################################################################################
+
 Well-Architect:
 	- São princípios (Framework) de organização na AWS
 	- O relatério do Well-Architected vai ajudar você a conhecer os riscos do seu ambiente
@@ -95,9 +100,33 @@ Well-Architect:
 		- Define Workload // Você definirá especificidades da sua organização e a AWS dirá se você está seguindo as boas práticas
 		- Salvando Milestone você pode dar sequência ao seu questionário de melhor no serviço
 		
+#########################################################################################
+#############Day4########################################################################
+#########################################################################################		
 		
-		
+IAM é responsável pela gestão dos usuários
 
+No Dashboard, a direita é possível mudar o Account Alias, mudando assim também o link que os usuários usarão para acessar o console
+
+Groups:
+	- Você poderá criar grupos através da opção a esquerda Access management => User Groups => Create Groups
+	- Primeiro passo é selecionar o nome do grupo em user group name
+	- Será dada a opção de atachar usuarios que não confirmaram a conta na AWS mas foram adicionados como account
+	- Você poderá attachar permission policies ou políticas de permissão da AWS ou criar políticas atualizadas
+	- A AWS já conta com 769 políticas tais como:
+		* Administrator Access // Controle total
+		* AmazonEC2ReadOnlyAccess // usuário tem permissão apenas leitura nas maquinas EC2
+		* AmazonEC2FullAccess // Usuário tem acesso completo as máquinas EC2 com privilégios
+		* AmazonEC2InstantConnect // Versão específica pra possibilitar acesso SSH
+IAM users:
+	- Para criar um usuario IAM no Dash dos Users clique em Add user
+	- É boa prática dar nomes humanos para usuários humanos e definir nomes de automações para usos terceiros como linguagens de 
+	programação e infrastructure as code.
+	- Acces types:
+		* Programatic Access // Utiliza ID e secret pra logar. Geralmente ideal quando usando ferramenta terceira
+		* Console Password // acesso ao console. Ideal para usuários humanos
+		*
+	
 		
 	
 
