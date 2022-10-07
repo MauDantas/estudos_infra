@@ -1,0 +1,105 @@
+#########################################################################################
+#############Day1########################################################################
+#########################################################################################
+
+Vantagens de infra em cloud:
+	- Agilidade
+	- Manutenção
+	- Confiabilidade
+		+ O principal produto do terceiro é cuidar da infra. O que reduz o tempo de outage
+		teoricamente falando
+	- Segurança
+	- Performance
+	- Escalabilidade
+		+ Crescer a infra no cloud é mais fácil. Mas se a infra não for projetada pra ter 
+		elasticidade ela não escala
+	- Custo e elasticidade
+		* Soft limit: Existe um limite de elasticidade até 30, aumentável sobre demanda
+		* hard limit: Existe um limite de recurso. Não é infinito. Mas é muito raro que seja atingido
+		
+Vantagens de infra em cloud segundo o NIST:
+	- Serviço sob demanda
+		+ você usa o tanto que você precisa
+	- Acesso a uma rede distribuída
+	- Recursos em Pooling
+		+ tem um catálogo de recursos adicionais que podem ser incrementados na hora que quiser
+
+Modelos de Cloud:
+	- Infraestrutura como serviço (IaaS)
+		+ Você não tem a estrutura local, você a usa como serviço.
+	- Plataforma como serviço (PaaS)
+		+ Está uma camada abaixo do IaaS
+		+ Você roda o produto na plataforma sem quantificar a as máquinas
+		+ ex: Hiroku
+	- Função como Serviço (FaaS)
+		+ Ainda mais granular que os anteriores, o FaaS deve ter uma função única assim como um Microserviço
+
+Modelos de Deploy:
+	- Private Cloud
+		+ Infraestrutura própria. Ex: VMWare e Openstack
+	- Public Cloud
+		+ Serviços como AWS, GCP e Azure
+	- Hybrid Cloud
+		+ Quando um serviço roda numa cloud pública e privada ao mesmo tempo
+	- Multicloud
+		+ Utilizar mais de um service provider de cloud ao mesmo tempo para ter redundância no serviço
+
+#########################################################################################
+#############Day2########################################################################
+#########################################################################################
+
+Devem existir muitas contas na AWS responsáveis por diferentes serviços
+
+Root Account: Primeira conta que você criará na AWS. A partir dela você criará subaccounts. Ela é ideal para
+gerenciar billing
+
+Não é uma boa prática usar root account pra fazer qualquer deploy
+
+OU (Organization Unit):
+	- Divisão organizacional de contas as quais podemos restringir serviços de vários conceitos para 
+	as contas que estão abaixo dela como tipo de máquina, tipo de serviço, região da instância de serviço, etc.
+
+Contas:
+	- Crie emails mesmo nas subcontas
+
+Criando conta:
+	- Create an AWS account (em laranja)
+	- verifique o e-mail
+	- cria uma senha 
+	- Preencha informações de endereço para billing
+	- Cartão de crédito + endereço de cobrança
+
+Free tier:
+	- [[12 meses]] Amazon EC2: 750 horas por mês
+	- [[12 meses]] S3 Storage: 5 GB, 20000 GETs e 2000 PUT
+	- [[12 meses]] RDS (Banco de dados): 750 horas por mês
+
+Segurança:
+
+	- Ative a autenticação de 2 fatores (MFA)
+
+
+Para alterar/criar organizações: organization 
+
+- Add an account
+- Clica na conta e depois mover conta
+
+- Criação de Policies
+
+Well-Architect:
+	- São princípios (Framework) de organização na AWS
+	- O relatério do Well-Architected vai ajudar você a conhecer os riscos do seu ambiente
+	- Pilares
+	- Princípios de design
+	- Questionários
+		- Define Workload // Você definirá especificidades da sua organização e a AWS dirá se você está seguindo as boas práticas
+		- Salvando Milestone você pode dar sequência ao seu questionário de melhor no serviço
+		
+		
+		
+
+		
+	
+
+
+	
